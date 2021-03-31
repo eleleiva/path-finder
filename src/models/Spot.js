@@ -36,7 +36,7 @@ class Spot {
 
     if (this.end) return [255, 0, 0];
 
-    if (this.start) return [0, 0, 255];
+    if (this.start) return [155, 225, 30];
 
     return [255];
   }

@@ -6,7 +6,7 @@ function drawDot({ dot }) {
     y: dot.y * dot.width + dot.width * 0.5,
     width: dot.width - 1,
     height: dot.height - 1,
-    color: [155, 200, 30],
+    color: [0, 0, 255],
   });
 }
 

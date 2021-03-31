@@ -162,7 +162,15 @@ function sketch({
 
   function createCanvas(canvasParentRef) {
     console.log('A* started');
-    DrawerFactory.p5.createCanvas(1000, 1000).parent(canvasParentRef);
+
+    const smallerSize =
+      window.innerWidth > window.innerHeight
+        ? window.innerHeight
+        : window.innerWidth;
+
+    DrawerFactory.p5
+      .createCanvas(smallerSize, smallerSize)
+      .parent(canvasParentRef);
 
     width = DrawerFactory.p5.width / columns;
     height = DrawerFactory.p5.height / rows;
