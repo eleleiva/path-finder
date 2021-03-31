@@ -1,4 +1,4 @@
-import { P5Factory } from './P5Factory';
+import { DrawerFactory } from 'models/DrawerFactory';
 
 class Spot {
   static wallChance = 0.5;
@@ -17,9 +17,9 @@ class Spot {
     this.id = Spot.nextId;
     this.x = x;
     this.y = y;
-    this.f = 0;
-    this.g = 0;
-    this.h = 0;
+    this.totalCost = 0;
+    this.currentPathCost = 0;
+    this.costToFinish = 0;
     this.width = width;
     this.height = height;
     this.neighbors = [];
@@ -32,13 +32,13 @@ class Spot {
   }
 
   get color() {
-    if (this.wall) return 0;
+    if (this.wall) return [0];
 
-    if (this.end) return P5Factory.p5.color(255, 0, 0);
+    if (this.end) return [255, 0, 0];
 
-    if (this.start) return P5Factory.p5.color(0, 0, 255);
+    if (this.start) return [0, 0, 255];
 
-    return 255;
+    return [255];
   }
 
   get neighborWalls() {
@@ -47,29 +47,23 @@ class Spot {
 
   show() {
     if (this.wall) {
-      P5Factory.p5.fill(0);
-      P5Factory.p5.noStroke();
-
-      P5Factory.p5.ellipse(
-        this.x * this.width + this.width * 0.5,
-        this.y * this.width + this.width * 0.5,
-        this.width - 1,
-        this.height - 1
-      );
-
-      P5Factory.p5.stroke(0);
-      P5Factory.p5.strokeWeight(this.width / 2);
+      DrawerFactory.dot({
+        x: this.x * this.width + this.width * 0.5,
+        y: this.y * this.width + this.width * 0.5,
+        width: this.width - 1,
+        height: this.height - 1,
+        color: [0],
+      });
 
       this.neighborWalls.forEach(this.drawLineToNeighbor);
     } else if (this.start || this.end) {
-      P5Factory.p5.fill(this.color);
-      P5Factory.p5.noStroke();
-      P5Factory.p5.ellipse(
-        this.x * this.width + this.width / 2,
-        this.y * this.height + this.height / 2,
-        this.width - 1,
-        this.height - 1
-      );
+      DrawerFactory.dot({
+        x: this.x * this.width + this.width * 0.5,
+        y: this.y * this.width + this.width * 0.5,
+        width: this.width - 1,
+        height: this.height - 1,
+        color: this.color,
+      });
     }
   }
 
@@ -83,36 +77,43 @@ class Spot {
     // Connect to Right Dot
     if (neighborX > x && neighborY === y) {
       // Top Line
-      P5Factory.p5.line(
-        x * width + width / 2,
-        y * height + height / 4,
-        neighborX * neighborWidth + neighborWidth / 2,
-        neighborY * neighborHeight + neighborHeight / 4
-      );
-
+      DrawerFactory.line({
+        startX: x * width + width / 2,
+        startY: y * height + height / 4,
+        endX: neighborX * neighborWidth + neighborWidth / 2,
+        endY: neighborY * neighborHeight + neighborHeight / 4,
+        color: [0],
+        strokeWeight: this.width / 2,
+      });
       // Bottom Line
-      P5Factory.p5.line(
-        x * width + width / 2,
-        y * height + height * 0.75,
-        neighborX * neighborWidth + neighborWidth / 2,
-        neighborY * neighborHeight + neighborHeight * 0.75
-      );
+      DrawerFactory.line({
+        startX: x * width + width / 2,
+        startY: y * height + height * 0.75,
+        endX: neighborX * neighborWidth + neighborWidth / 2,
+        endY: neighborY * neighborHeight + neighborHeight * 0.75,
+        color: [0],
+        strokeWeight: this.width / 2,
+      });
       // Connect to top Dot
     } else if (neighborX === x && neighborY > y) {
       // Right Line
-      P5Factory.p5.line(
-        x * width + height / 4,
-        y * height + height / 2,
-        neighborX * neighborWidth + neighborWidth / 4,
-        neighborY * neighborHeight + neighborHeight / 2
-      );
+      DrawerFactory.line({
+        startX: x * width + height / 4,
+        startY: y * height + height / 2,
+        endX: neighborX * neighborWidth + neighborWidth / 4,
+        endY: neighborY * neighborHeight + neighborHeight / 2,
+        color: [0],
+        strokeWeight: this.width / 2,
+      });
       // Left Line
-      P5Factory.p5.line(
-        x * width + width * 0.75,
-        y * height + height / 2,
-        neighborX * neighborWidth + width * 0.75,
-        neighborY * neighborHeight + height / 2
-      );
+      DrawerFactory.line({
+        startX: x * width + width * 0.75,
+        startY: y * height + height / 2,
+        endX: neighborX * neighborWidth + width * 0.75,
+        endY: neighborY * neighborHeight + height / 2,
+        color: [0],
+        strokeWeight: this.width / 2,
+      });
     }
   };
 

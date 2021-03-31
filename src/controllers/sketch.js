@@ -1,11 +1,16 @@
-import { Spot } from './Spot';
-import { P5Factory } from './P5Factory';
-import { removeFromArray, calculatePath, getToCommonItem } from './arrayUtils';
-import { drawDot } from './drawUtils';
-import { heuristic } from './mathUtils';
-import { Grid } from './Grid';
+import { DrawerFactory } from 'models/DrawerFactory';
+import { Grid } from 'models/Grid';
+import { Spot } from 'models/Spot';
+import { calculatePath, getToCommonItem, removeFromArray } from 'utils/array';
+import { drawDot } from 'utils/draw';
+import { heuristic } from 'utils/math';
 
-function sketch({ columns = 50, rows = 50, delay = false } = {}) {
+function sketch({
+  columns = 50,
+  rows = 50,
+  delay = false,
+  delayTime = 5,
+} = {}) {
   const grid = new Grid({ columns, rows });
   let openSet = [];
   let closedSet = [];
@@ -18,14 +23,13 @@ function sketch({ columns = 50, rows = 50, delay = false } = {}) {
   let width = 0;
   let height = 0;
   let delayCounter = 0;
-  let delayTime = 5;
 
   function resetCost() {
     grid.items.forEach((item) => {
       item.previous = null;
-      item.g = 0;
-      item.h = 0;
-      item.f = 0;
+      item.currentPathCost = 0;
+      item.costToFinish = 0;
+      item.totalCost = 0;
     });
   }
 
@@ -46,27 +50,27 @@ function sketch({ columns = 50, rows = 50, delay = false } = {}) {
     closedSet.push(current);
 
     const { neighbors } = current;
-    let temporalG = 0;
+    let temporalCurrentPathCost = 0;
 
     neighbors.forEach((neighbor) => {
       if (!closedSet.includes(neighbor) && !neighbor.wall) {
-        temporalG = current.g + 1;
+        temporalCurrentPathCost = current.currentPathCost + 1;
         let newPath = false;
 
         if (openSet.includes(neighbor)) {
-          if (temporalG < neighbor.g) {
-            neighbor.g = temporalG;
+          if (temporalCurrentPathCost < neighbor.currentPathCost) {
+            neighbor.currentPathCost = temporalCurrentPathCost;
             newPath = true;
           }
         } else {
-          neighbor.g = temporalG;
+          neighbor.currentPathCost = temporalCurrentPathCost;
           newPath = true;
           openSet.push(neighbor);
         }
 
         if (newPath) {
-          neighbor.h = heuristic(neighbor, end);
-          neighbor.f = neighbor.g + neighbor.h;
+          neighbor.costToFinish = heuristic(neighbor, end);
+          neighbor.totalCost = neighbor.currentPathCost + neighbor.costToFinish;
           neighbor.previous = current;
         }
       }
@@ -115,9 +119,13 @@ function sketch({ columns = 50, rows = 50, delay = false } = {}) {
     const currentItemToAnalyze = [...openSet]
       .sort()
       .reduce((previousValue, currentValue) => {
-        if (currentValue.f < previousValue.f) return currentValue;
+        if (currentValue.totalCost < previousValue.totalCost) {
+          return currentValue;
+        }
 
-        if (currentValue.g > previousValue.g) return currentValue;
+        if (currentValue.currentPathCost > previousValue.currentPathCost) {
+          return currentValue;
+        }
 
         return previousValue;
       }, openSet[0]);
@@ -137,7 +145,7 @@ function sketch({ columns = 50, rows = 50, delay = false } = {}) {
   }
 
   function setup(passedP5, canvasParentRef) {
-    P5Factory.p5 = passedP5;
+    DrawerFactory.p5 = passedP5;
 
     createCanvas(canvasParentRef);
 
@@ -145,7 +153,7 @@ function sketch({ columns = 50, rows = 50, delay = false } = {}) {
   }
 
   function drawDots() {
-    P5Factory.p5.background(255);
+    DrawerFactory.p5.background(255);
 
     grid.items.forEach((item) => {
       item.show();
@@ -154,10 +162,10 @@ function sketch({ columns = 50, rows = 50, delay = false } = {}) {
 
   function createCanvas(canvasParentRef) {
     console.log('A* started');
-    P5Factory.p5.createCanvas(1000, 1000).parent(canvasParentRef);
+    DrawerFactory.p5.createCanvas(1000, 1000).parent(canvasParentRef);
 
-    width = P5Factory.p5.width / columns;
-    height = P5Factory.p5.height / rows;
+    width = DrawerFactory.p5.width / columns;
+    height = DrawerFactory.p5.height / rows;
   }
 
   function addNeighbors() {
