@@ -1,0 +1,60 @@
+.canvasContainer {
+  display: flex;
+  justify-content: center;
+  margin: auto;
+}
+
+.container {
+  display: flex;
+  height: 100%;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.icon {
+  color: #1c2321;
+  transform: perspective(1px) translateZ(0);
+  transition-duration: 0.3s;
+  transition-property: transform;
+}
+
+.icon:hover,
+.icon:focus,
+.icon:active {
+  transform: scale(1.2);
+}
+
+.hidden {
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  font-size: x-large;
+  align-items: center;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.links a {
+  margin: 4rem 1rem;
+}
+
+@media (orientation: portrait) {
+  .container {
+    flex-direction: column;
+  }
+
+  .links {
+    margin: 0;
+
+    flex-direction: row;
+  }
+}

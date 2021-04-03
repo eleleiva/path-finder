@@ -32,13 +32,13 @@ class Spot {
   }
 
   get color() {
-    if (this.wall) return [0];
+    if (this.wall) return DrawerFactory.color.black;
 
-    if (this.end) return [255, 0, 0];
+    if (this.end) return DrawerFactory.color.red;
 
-    if (this.start) return [155, 225, 30];
+    if (this.start) return DrawerFactory.color.green;
 
-    return [255];
+    return DrawerFactory.color.white;
   }
 
   get neighborWalls() {
@@ -52,7 +52,7 @@ class Spot {
         y: this.y * this.width + this.width * 0.5,
         width: this.width - 1,
         height: this.height - 1,
-        color: [0],
+        color: DrawerFactory.color.black,
       });
 
       this.neighborWalls.forEach(this.drawLineToNeighbor);
@@ -82,7 +82,7 @@ class Spot {
         startY: y * height + height / 4,
         endX: neighborX * neighborWidth + neighborWidth / 2,
         endY: neighborY * neighborHeight + neighborHeight / 4,
-        color: [0],
+        color: DrawerFactory.color.black,
         strokeWeight: this.width / 2,
       });
       // Bottom Line
@@ -91,7 +91,7 @@ class Spot {
         startY: y * height + height * 0.75,
         endX: neighborX * neighborWidth + neighborWidth / 2,
         endY: neighborY * neighborHeight + neighborHeight * 0.75,
-        color: [0],
+        color: DrawerFactory.color.black,
         strokeWeight: this.width / 2,
       });
       // Connect to top Dot
@@ -102,7 +102,7 @@ class Spot {
         startY: y * height + height / 2,
         endX: neighborX * neighborWidth + neighborWidth / 4,
         endY: neighborY * neighborHeight + neighborHeight / 2,
-        color: [0],
+        color: DrawerFactory.color.black,
         strokeWeight: this.width / 2,
       });
       // Left Line
@@ -111,7 +111,7 @@ class Spot {
         startY: y * height + height / 2,
         endX: neighborX * neighborWidth + width * 0.75,
         endY: neighborY * neighborHeight + height / 2,
-        color: [0],
+        color: DrawerFactory.color.black,
         strokeWeight: this.width / 2,
       });
     }
@@ -120,29 +120,20 @@ class Spot {
   addNeighbors(grid) {
     const { x, y } = this;
 
-    if (x < grid.length - 1) {
-      this.neighbors.push(grid[x + 1][y]);
-    }
-    if (x < grid.length - 1 && y < grid[0].length - 1) {
-      this.neighbors.push(grid[x + 1][y + 1]);
-    }
-    if (x < grid.length - 1 && y > 0) {
-      this.neighbors.push(grid[x + 1][y - 1]);
-    }
-    if (x > 0) {
-      this.neighbors.push(grid[x - 1][y]);
-    }
-    if (y < grid[0].length - 1) {
-      this.neighbors.push(grid[x][y + 1]);
-    }
-    if (y > 0) {
-      this.neighbors.push(grid[x][y - 1]);
-    }
-    if (x > 0 && y < grid[0].length - 1) {
-      this.neighbors.push(grid[x - 1][y + 1]);
-    }
-    if (x > 0 && y > 0) {
-      this.neighbors.push(grid[x - 1][y - 1]);
+    for (
+      let i = Math.max(0, x - 1);
+      i <= Math.min(x + 1, grid.length - 1);
+      i++
+    ) {
+      for (
+        let j = Math.max(0, y - 1);
+        j <= Math.min(y + 1, grid[0].length - 1);
+        j++
+      ) {
+        if (x !== i || y !== j) {
+          this.neighbors.push(grid[i][j]);
+        }
+      }
     }
   }
 }

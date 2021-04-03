@@ -112,7 +112,6 @@ function sketch({
 
     console.log('no solution');
     resetPath();
-    return;
   }
 
   function analyzeOpenSet() {
@@ -153,7 +152,7 @@ function sketch({
   }
 
   function drawDots() {
-    DrawerFactory.p5.background(255);
+    DrawerFactory.drawBackground({ color: DrawerFactory.color.white });
 
     grid.items.forEach((item) => {
       item.show();
@@ -164,9 +163,9 @@ function sketch({
     console.log('A* started');
 
     const smallerSize =
-      window.innerWidth > window.innerHeight
+      (window.innerWidth > window.innerHeight
         ? window.innerHeight
-        : window.innerWidth;
+        : window.innerWidth) * 0.9;
 
     DrawerFactory.p5
       .createCanvas(smallerSize, smallerSize)

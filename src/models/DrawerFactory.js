@@ -11,6 +11,16 @@ class DrawerFactory {
     DrawerFactory.storedP5 = p5;
   }
 
+  static get color() {
+    return {
+      blue: [0, 0, 255],
+      red: [255, 0, 0],
+      green: [155, 225, 30],
+      black: [0],
+      white: [255],
+    };
+  }
+
   static dot({ x, y, width, height, color }) {
     if (color) DrawerFactory.p5.fill(...color);
 
@@ -29,6 +39,10 @@ class DrawerFactory {
 
   static distance({ startX, startY, endX, endY }) {
     return DrawerFactory.p5.dist(startX, startY, endX, endY);
+  }
+
+  static drawBackground({ color }) {
+    DrawerFactory.p5.background(color);
   }
 }
 
